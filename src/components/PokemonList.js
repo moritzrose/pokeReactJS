@@ -12,18 +12,17 @@ function PokemonList() {
     useEffect(() => {
         axios.get("https://pokeapi.co/api/v2/pokemon")
             .then(response => {
+                // This may take a while! So calling setShowData or pokemonList might be able to run before fetching is done!
                 setData(response.data.results)
-                pokemonList(pageIndex) // call the method after data is set
-                //setShowData(response.data.results.slice(0,5))
             })
     }, []);
 
-    // By using another useEffect hook that watches changes in pageIndex, we ensure that
-    // pokemonList gets called whenever pageIndex changes, reflecting the updated value
+    // By using another useEffect hook that watches changes in pageIndex & data, we ensure that
+    // pokemonList gets called whenever pageIndex or data changes, reflecting the updated value
     // in showData.
     useEffect(() => {
         pokemonList(pageIndex) // call pokemonList whenever pageIndex changes
-    }, [pageIndex])
+    }, [pageIndex, data])
 
 
 
@@ -35,6 +34,7 @@ function PokemonList() {
     return (
         <>
             {/*Add conditional rendering to showData - otherwise on inital loading no data is shown! */}
+            {/*// TODO: Not 100% sure, if this statement is true - but I am too lazy to revert right now */}
             {/*// TODO: (side note: showData can probably be eliminated as state as it is only needed to slice the data */}
 
             {showData ? showData.map((pokemon, index) => (
@@ -48,7 +48,7 @@ function PokemonList() {
                     // manual call and used a new useEffect instead )
                     setPageIndex(pageIndex - 1)
                     console.log(pageIndex)
-                    // pokemonList(pageIndex)
+                    // pokemonList(pageIndex)  // DROPPED!
                 }
             }}><strong>&lt;</strong>   </button>
             <button onClick={() => {
@@ -56,7 +56,7 @@ function PokemonList() {
                     // same thing as in the first if statement - see comment above 👆
                     setPageIndex(pageIndex + 1)
                     console.log(pageIndex)
-                    // pokemonList(pageIndex)
+                    // pokemonList(pageIndex)  // DROPPED!
                 }
             }}><strong>&gt;</strong></button>
         </>
